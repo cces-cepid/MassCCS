@@ -44,6 +44,7 @@ private:
   unsigned int force_type;
   void readXYZfile(string &filename);
   void readPQRfile(string &filename);
+  void readMFJfile(string &filename);
   void readUserFF(string &user_ff);
   void defaultFF();
   void calculateCenterOfMass(double(&)[3]);

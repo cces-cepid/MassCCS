@@ -412,7 +412,7 @@ double eps_O, eps_C;
 double sig_O, sig_C;
 
 qC = 0.6512;
-qO = -0.5*qC;
+qO = -0.3256;
 d = 1.149;
 
 eps_O = 0.159; 

@@ -37,6 +37,8 @@ if (extension == "pqr") {
   readPQRfile(filename);
 } else if (extension == "xyz") {
   readXYZfile(filename);
+} else if (extension == "mfj") {
+  readMFJfile(filename);
 } else {
   perror("Error: reading xyz file");
   throw std::invalid_argument("Error: only acceptable PQR or XYZ or XYZ-Q format");	
@@ -317,6 +319,9 @@ for (unsigned int i = 0; i < natoms; i++) {
 
 coordinates.close();
 }
+
+void MoleculeTarget::readMFJfile(string &filename) {
+}  
 
 void MoleculeTarget::readUserFF(string &user_ff) {
 ifstream userfile;

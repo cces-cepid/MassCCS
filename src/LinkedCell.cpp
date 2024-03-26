@@ -196,20 +196,20 @@ for (int i = 0; i < natoms; i++) {
 
 iatom = 0;
 for (int i = 0; i < Ncells; i++) {
-   if (atoms_inside_cell[i]) {
-     for (int j = 0; j < atoms_inside_cell[i]; j++) {
-        atoms_ids[i][j] = iatom;
-        iatom += 1;		
-     }	     
-   } 
+  if (atoms_inside_cell[i]) {
+    for (int j = 0; j < atoms_inside_cell[i]; j++) {
+      atoms_ids[i][j] = iatom;
+      iatom += 1;		
+    }	     
+  } 
 }
 
 for (int i = 0; i < Ncells; i++) {
-   if (atoms_inside_cell[i]) {
-     head_atom_cell[i] = atoms_ids[i][0]; 	   
-   } else {
-     head_atom_cell[i] = -1; 	   
-   }
+  if (atoms_inside_cell[i]) {
+    head_atom_cell[i] = atoms_ids[i][0]; 	   
+  } else {
+    head_atom_cell[i] = -1; 	   
+  }
 }
 
 delete [] tmp_atomName;

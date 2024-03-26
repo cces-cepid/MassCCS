@@ -86,9 +86,11 @@ if (gas_buffer_flag == 1 || gas_buffer_flag == 4) {
   }
 }
 
+// select buffer gas type
 gas = new GasBuffer(gas_buffer_flag);
 
 double start_molecule = omp_get_wtime();
+// create molecule target
 moleculeTarget = new MoleculeTarget(targetFilename, gas_buffer_flag, user_ff, user_ff_flag, force_type); 
 double end_molecule = omp_get_wtime();
 cout << "orientation time of molecule target: " << (end_molecule - start_molecule) << " s" << endl;
