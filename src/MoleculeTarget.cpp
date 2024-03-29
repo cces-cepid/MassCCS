@@ -317,10 +317,162 @@ for (unsigned int i = 0; i < natoms; i++) {
   }
 }  
 
-coordinates.close();
+
 }
 
 void MoleculeTarget::readMFJfile(string &filename) {
+/*
+format mfj compatible with mobcal
+
+anthracene_631G++dp_pop  <- name
+1                        <- numbers of conformations    
+24                       <- numbers of atoms   
+ang                      <- distance in angstrons
+calc                     <- include partial charges
+1.0000                   <- scaling factor 1.0 by default  
+1.23300      0.72100      0.00000  12       .100860      <- x y z atomic-mass charge
+1.23300     -0.72100      0.00000  12       .138843
+2.47000      1.40800      0.00000  12      -.143510
+2.47000     -1.40800      0.00000  12      -.171107
+*/
+
+ifstream coordinates;
+string type, line;
+stringstream ss;
+ifstream infile;
+// read in the file
+coordinates.open(filename);
+
+// skip the first line (comment)
+getline(coordinates, line);
+ss.clear();
+ss.str(line);
+
+// read the number of conformations (first line)
+getline(coordinates, line);
+ss.clear();
+ss.str(line);
+
+// read the number of atoms
+getline(coordinates, line);
+ss.clear();
+ss.str(line);
+if (!(ss >> natoms)) {
+  perror("Error: reading mfj file");
+  throw std::invalid_argument("Error: missing number ot atoms in mfj file");
+  exit (EXIT_FAILURE);
+}
+
+// units 
+char ang;
+getline(coordinates, line);
+ss.clear();
+ss.str(line);
+ss >> ang;
+
+if (ang != 'ang') {
+  perror("Error: define units in angstrons");
+  throw std::invalid_argument("Error: define units in angstrons in mfj file");
+  exit (EXIT_FAILURE);
+}
+
+// mode 
+char mode;
+getline(coordinates, line);
+ss.clear();
+ss.str(line);
+ss >> mode;
+
+int ncolumns;
+if (mode == 'calc') { 
+  ncolumns = 5;
+} else if (mode == 'none') { 
+  ncolumns = 4;
+} else {
+  perror("Error: available options are: calc and none");
+  throw std::invalid_argument("Error: available options are: calc and none in mfj format");
+  exit (EXIT_FAILURE);
+}
+
+// scaling factor
+double scaling;
+getline(coordinates, line);
+ss.clear();
+ss.str(line);
+ss >> scaling;
+
+id = new int[natoms];
+x = new double[natoms];
+y = new double[natoms];
+z = new double[natoms];
+q = new double[natoms];
+m = new double[natoms];
+eps = new double[natoms];
+sig = new double[natoms];
+atomName = new string[natoms];
+
+if (gas_buffer_flag == 3) {
+  eps_central = new double[natoms];
+  sig_central = new double[natoms];
+}
+
+// read the coordinates and types
+string atomType;
+double xi, yi, zi, mi, qi, epsi, sigi;
+int amui;
+int ret_size = 3;
+if (gas_buffer_flag == 3) ret_size = 5;
+vector<double> ret(ret_size);
+
+for (unsigned int i = 0; i < natoms; i++) {
+  getline(coordinates, line);
+  ss.clear();
+  ss.str(line);
+
+  if (ncolumns == 5) {
+    ss >> xi >> yi >> zi >> amui >> qi;
+    id[i] = i;
+    atomType = elementChem(amui);
+    atomName[i] = atomType;
+    ret = assignedParameter(atomName[i]);
+    x[i] = xi;
+    y[i] = yi;
+    z[i] = zi;
+    q[i] = qi;
+    mi = ret[0];
+    m[i] = mi;
+    eps[i] = ret[1];
+    sig[i] = ret[2];
+    if (gas_buffer_flag == 3) {
+      eps_central[i] = ret[3];
+      sig_central[i] = ret[4];
+    }
+    this->mass += mi;
+    this->Q += 0.;
+  } else if (ncolumns == 4) {
+    ss >> xi >> yi >> zi >> amui;
+    id[i] = i;
+    atomType = elementChem(amui);
+    atomName[i] = atomType;
+    ret = assignedParameter(atomName[i]);
+    x[i] = xi;
+    y[i] = yi;
+    z[i] = zi;
+    q[i] = 0.;
+    mi = ret[0];
+    m[i] = mi;
+    eps[i] = ret[1];
+    sig[i] = ret[2];
+    if (gas_buffer_flag == 3) {
+      eps_central[i] = ret[3];
+      sig_central[i] = ret[4];
+    }
+    this->mass += mi;
+    this->Q += 0.;
+  }
+}  
+
+coordinates.close();
 }  
 
 void MoleculeTarget::readUserFF(string &user_ff) {
@@ -551,7 +703,7 @@ vector<double> ret(ret_size);
 for (int i = 0; i < nparameters; i++) {
   if (chemical == user_atomName[i]) {
     ret[0] = user_m[i];
-    if (gas_buffer_flag == 3) {
+    if (gas_buffer_flag == 3) {      
       // oxygen
       ret[1] = sqrt(user_eps[i]*0.159); 
       ret[2] = 0.5*(user_sig[i]+3.033);
@@ -572,6 +724,32 @@ for (int i = 0; i < nparameters; i++) {
 if (user_ff_flag) cout << "Atom type not found in the file user force field" << endl;
 else cout << "Atom type not found in the default data base " << endl;
 exit (EXIT_FAILURE);
+}
+
+string elementChem(int amui) {
+
+  switch(amui) {
+    case 12:
+      return "C";
+    case 14:
+      return "N";
+    case 1:
+      return "H";
+    case 16:
+      return "O";
+    case 32:
+      return "S";
+    case 31:
+      return "P";    
+    case 19:
+      return "F";
+    case 40:
+      return "K";  
+    default:
+      perror("Error: not recognize this element");
+      throw std::invalid_argument("Error: not recognize this element");
+      exit (EXIT_FAILURE);    
+  }
 }
 
 void MoleculeTarget::printFF() {

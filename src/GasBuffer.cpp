@@ -72,15 +72,18 @@ if (gas_type == "He") {
   mass = m[0];
   d = 0.0;
 } else if (gas_type == "N2") {
+  // nitrogen 1
   x[0] = 0.0;
   y[0] = 0.0;
   z[0] = 0.5488;
+  // dummy
   x[1] = 0.0;
   y[1] = 0.0;
-  z[1] = -0.5488; 
+  z[1] = 0.0;
+  // nitrogen 2
   x[2] = 0.0;
   y[2] = 0.0;
-  z[2] = 0.0;
+  z[2] = -0.5488;   
   vx[0] = 0.0;
   vy[0] = 0.0;
   vz[0] = 0.0;
@@ -91,22 +94,28 @@ if (gas_type == "He") {
   vy[2] = 0.0;
   vz[2] = 0.0;
   q[0] = -0.4825;
-  q[1] = -0.4825;
-  q[2] = 0.965; 
+  q[1] = 0.965; 
+  q[2] = -0.4825; 
   m[0] = 14.007;
-  m[1] = 14.007;
-  m[2] = 0.0;
+  m[1] = 0.0;
+  m[2] = 14.007;  
   eps[0] = 1.0;
-  eps[1] = 1.0;
-  eps[2] = 0.0;
+  eps[1] = 0.0;
+  eps[2] = 1.0;
   sig[0] = 0.0;
   sig[1] = 0.0;
   sig[2] = 0.0;
   atomName[0] = "N_1";
-  atomName[1] = "N_2";
-  atomName[2] = "Dummy";
-  mass = m[0] + m[1];
-  d = abs(z[0]-z[1]);
+  atomName[1] = "Dummy";
+  atomName[2] = "N_2";
+  mass = m[0] + m[1] + m[2];
+  d = abs(z[0]-z[2]);
+  //polarizability (axial)  = 2.19609742e-30 in m3
+  //polarizability (radial) = 1.51148405e-30 in m3
+  alpha_radial = 2.19609742; 
+  alpha_axial = 1.51148405;
+  alpha_radial *= ALPHA_TO_KCAL_MOL;
+  alpha_axial *= ALPHA_TO_KCAL_MOL;
 } else if (gas_type == "CO2") {
   // force field parameter of Harris and Yung (1995)
   // site  epilson (K) epsilon (kcal/mol)  sigma (A)  q(e)
@@ -118,7 +127,7 @@ if (gas_type == "He") {
   //  C     27.0         0.05465417553510929  2.80    0.70
   //  O     79.0         0.1569881432323568 3.05   -0.35
   // bond distance C-O 1.16 A
-  // force field parameter Zhang
+  // force field parameter Zhang <- not convergence of results never choice
   // site  epsilon (K)  epsilon (kcal/mol)  sigma (A)  q(e)
   //  C     28.845      0.05732054419667509 2.7918    0.5888
   //  O     82.656      0.1642533160381479  3.0000   -0.2944
@@ -126,7 +135,7 @@ if (gas_type == "He") {
   //oxygen 1
   x[0] = 0.0;
   y[0] = 0.0;
-  z[0] = -1.149;
+  z[0] = 1.149;
   // carbon
   x[1] = 0.0;
   y[1] = 0.0;
@@ -134,7 +143,7 @@ if (gas_type == "He") {
   // oxygen 2
   x[2] = 0.0;
   y[2] = 0.0;
-  z[2] = 1.149;
+  z[2] = -1.149;
   vx[0] = 0.0;
   vy[0] = 0.0;
   vz[0] = 0.0;

@@ -269,7 +269,7 @@ if (gas_buffer_flag == 1 || gas_buffer_flag == 4 || gas_buffer_flag == 5) {
     gasProbe = new GasBuffer(gas_buffer_flag);  
 
     setup(gasProbe, hit, rnd_vec1[j],rnd_vec2[j],rnd_vec3[j],rnd_vec4[j],rnd_vec5[j],rnd_vec6[j],rnd_vec7[j],rnd_vec8[j],rnd_vec9[j]);
-    
+
     if (hit) {
       run_CO2(gasProbe, success, chi, dt, force);
       if (success) {
@@ -595,7 +595,7 @@ double fi_gas[natoms][3]; // initial force of buffer gas
 Up_gas = 0.0;
 for (int iatom = 0; iatom < natoms; iatom++) {
   if (force_type == 1) {
-    if (iatom == 2) {
+    if (iatom == 1) {
       f[0] = 0.0;
       f[1] = 0.0;
       f[2] = 0.0;
@@ -604,7 +604,7 @@ for (int iatom = 0; iatom < natoms; iatom++) {
      force->lennardjones(gasProbe,iatom,f,Up);
     } 
   } else if (force_type == 2) {
-    if (iatom == 2) {
+    if (iatom == 1) {
       f[0] = 0.0;
       f[1] = 0.0;
       f[2] = 0.0;
@@ -613,25 +613,25 @@ for (int iatom = 0; iatom < natoms; iatom++) {
       force->lennardjones_LC(gasProbe,iatom,f,Up);
     }
   } else if (force_type == 3) {
-    if (iatom == 2) {
+    if (iatom == 1) {
       force->coulomb(gasProbe,iatom,f,Up); 
     } else {
       force->lennardjones_coulomb(gasProbe,iatom,f,Up);
     }
   } else if (force_type == 4) {
-    if (iatom == 2) {
+    if (iatom == 1) {
       force->coulomb_LC(gasProbe,iatom,f,Up); 
     } else {
       force->lennardjones_coulomb_LC(gasProbe,iatom,f,Up);
     }
   } else if (force_type == 5) {
-    if (iatom == 2) {
+    if (iatom == 1) {
       force->coulomb_induced_dipole_iso(gasProbe,iatom,f,Up); 
     } else {
       force->lennardjones_coulomb(gasProbe,iatom,f,Up);
     }
   } else if (force_type == 6) {
-    if (iatom == 2) {
+    if (iatom == 1) {
       force->coulomb_induced_dipole_iso_LC(gasProbe,iatom,f,Up);
     } else {
       force->lennardjones_coulomb_LC(gasProbe,iatom,f,Up);
@@ -727,17 +727,17 @@ while (trajTries < maxTries && maxTries < 10) {
   vi[2] = vz[0];
   mi = m[0];
   // nitrogen 2
-  rj[0] = x[1];
-  rj[1] = y[1];
-  rj[2] = z[1];
-  vj[0] = vx[1];
-  vj[1] = vy[1];
-  vj[2] = vz[1];
-  mj = m[1];
+  rj[0] = x[2];
+  rj[1] = y[2];
+  rj[2] = z[2];
+  vj[0] = vx[2];
+  vj[1] = vy[2];
+  vj[2] = vz[2];
+  mj = m[2];
 
   for (int i = 0; i < 3; i++) {
-    fi[i] = f_gas[0][i] + 0.5*f_gas[2][i]; // nitrogen 1 + dummy atom
-    fj[i] = f_gas[1][i] + 0.5*f_gas[2][i]; // nitrogen 2 + dummy atom
+    fi[i] = f_gas[0][i] + 0.5*f_gas[1][i]; // nitrogen 1 + dummy atom
+    fj[i] = f_gas[2][i] + 0.5*f_gas[1][i]; // nitrogen 2 + dummy atom
   }   
     
   first_half_verlet_constrained(ri, rj, vi, vj, fi, fj, mi, mj, dt, d2ij);
@@ -751,21 +751,21 @@ while (trajTries < maxTries && maxTries < 10) {
   vy[0] = vi[1];
   vz[0] = vi[2];
   // nitrogen 2
-  x[1] = rj[0];
-  y[1] = rj[1];
-  z[1] = rj[2];
-  vx[1] = vj[0];
-  vy[1] = vj[1];
-  vz[1] = vj[2];
+  x[2] = rj[0];
+  y[2] = rj[1];
+  z[2] = rj[2];
+  vx[2] = vj[0];
+  vy[2] = vj[1];
+  vz[2] = vj[2];
   // update center mass position and velocity
   for (int i = 0; i < 3; i++) {
     rcm[i] = 0.5*(ri[i] + rj[i]);
     vcm[i] = 0.5*(vi[i] + vj[i]);      
   }
   // dummy
-  x[2] = rcm[0];
-  y[2] = rcm[1];
-  z[2] = rcm[2];
+  x[1] = rcm[0];
+  y[1] = rcm[1];
+  z[1] = rcm[2];
   
   // update gas buffer positions and velocities
   for (int iatom = 0; iatom < natoms; iatom++) {
@@ -786,7 +786,7 @@ while (trajTries < maxTries && maxTries < 10) {
   Up_gas = 0.0;
   for (int iatom = 0; iatom < natoms; iatom++) {
     if (force_type == 1) {
-      if (iatom == 2) {
+      if (iatom == 1) {
         f[0] = 0.0;
         f[1] = 0.0;
         f[2] = 0.0;
@@ -795,7 +795,7 @@ while (trajTries < maxTries && maxTries < 10) {
         force->lennardjones(gasProbe,iatom,f,Up);
       } 
     } else if (force_type == 2) {
-      if (iatom == 2) {
+      if (iatom == 1) {
         f[0] = 0.0;
         f[1] = 0.0;
         f[2] = 0.0;
@@ -804,25 +804,25 @@ while (trajTries < maxTries && maxTries < 10) {
         force->lennardjones_LC(gasProbe,iatom,f,Up);
       }
     } else if (force_type == 3) {
-      if (iatom == 2) {
+      if (iatom == 1) {
         force->coulomb(gasProbe,iatom,f,Up); 
       } else {
         force->lennardjones_coulomb(gasProbe,iatom,f,Up);
       }
     } else if (force_type == 4) {
-      if (iatom == 2) {
+      if (iatom == 1) {
         force->coulomb_LC(gasProbe,iatom,f,Up); 
       } else {
         force->lennardjones_coulomb_LC(gasProbe,iatom,f,Up);
       }
     } else if (force_type == 5) {
-      if (iatom == 2) {
+      if (iatom == 1) {
         force->coulomb_induced_dipole_iso(gasProbe,iatom,f,Up);
       } else {
         force->lennardjones_coulomb(gasProbe,iatom,f,Up);
       }
     } else if (force_type == 6) {
-      if (iatom == 2) {
+      if (iatom == 1) {
         force->coulomb_induced_dipole_iso_LC(gasProbe,iatom,f,Up);
       } else {
         force->lennardjones_coulomb_LC(gasProbe,iatom,f,Up);
@@ -844,17 +844,17 @@ while (trajTries < maxTries && maxTries < 10) {
   vi[2] = vz[0];
   mi = m[0];
   // nitrogen 2
-  rj[0] = x[1];
-  rj[1] = y[1];
-  rj[2] = z[1];
-  vj[0] = vx[1];
-  vj[1] = vy[1];
-  vj[2] = vz[1];
-  mj = m[1];
+  rj[0] = x[2];
+  rj[1] = y[2];
+  rj[2] = z[2];
+  vj[0] = vx[2];
+  vj[1] = vy[2];
+  vj[2] = vz[2];
+  mj = m[2];
 
   for (int i = 0; i < 3; i++) {
-    fi[i] = f_gas[0][i] + 0.5*f_gas[2][i]; // nitrogen 1 + dummy atom
-    fj[i] = f_gas[1][i] + 0.5*f_gas[2][i]; // nitrogen 2 + dummy atom
+    fi[i] = f_gas[0][i] + 0.5*f_gas[1][i]; // nitrogen 1 + dummy atom
+    fj[i] = f_gas[2][i] + 0.5*f_gas[1][i]; // nitrogen 2 + dummy atom
   }   
     
   second_half_verlet_constrained(ri, rj, vi, vj, fi, fj, mi, mj, dt);
@@ -862,17 +862,22 @@ while (trajTries < maxTries && maxTries < 10) {
   vx[0] = vi[0];
   vy[0] = vi[1];
   vz[0] = vi[2];
-  vx[1] = vj[0];
-  vy[1] = vj[1];
-  vz[1] = vj[2];
+  vx[2] = vj[0];
+  vy[2] = vj[1];
+  vz[2] = vj[2];
 
   // update center mass position and velocity
   for (int i = 0; i < 3; i++) {
     vcm[i] = 0.5*(vi[i] + vj[i]);      
   }
 
+  // dummy
+  vx[1] = vcm[0];
+  vy[1] = vcm[1];
+  vz[1] = vcm[2];
+
   // update gas buffer velocities
-  for (int iatom = 0; iatom < natoms-1; iatom++) {
+  for (int iatom = 0; iatom < natoms; iatom++) {
     gasProbe->vx[iatom] = vx[iatom];
     gasProbe->vy[iatom] = vy[iatom];
     gasProbe->vz[iatom] = vz[iatom]; 
@@ -890,7 +895,7 @@ while (trajTries < maxTries && maxTries < 10) {
   // check if outside the box simulation
   if (abs(rcm[0]) >= lx || abs(rcm[1]) >= ly || abs(rcm[2]) >= lz) {
     Ek = 0.0;
-    for (int iatom = 0; iatom < natoms-1; iatom++) {
+    for (int iatom = 0; iatom < natoms; iatom++) {
       v[0] = vx[iatom];
       v[1] = vy[iatom];
       v[2] = vz[iatom];
@@ -918,7 +923,7 @@ while (trajTries < maxTries && maxTries < 10) {
     r = Math::dotProduct(ur,ur);
     if (r > 1.0) {
       Ek = 0.0;
-      for (int iatom = 0; iatom < natoms-1; iatom++) {
+      for (int iatom = 0; iatom < natoms; iatom++) {
         v[0] = vx[iatom];
         v[1] = vy[iatom];
         v[2] = vz[iatom];
@@ -949,7 +954,7 @@ return;
 // Carbon dioxide molecular gas dynamics
 void System::run_CO2(GasBuffer *gasProbe, bool &success, double &chi, double time_step, Force *force) {
 double dt = time_step;
-double Ei, Ef, dE, E, Wc, W;
+double Ei, Ef, dE, E;
 double Ui, Ki, dK, dU;
 vector<double> rcm_i(3),rcm_f(3);
 vector<double> rcm_new(3),rcm_old(3),vcm_new(3),vcm_old(3);
@@ -1011,7 +1016,7 @@ rcm[1] = gasProbe->rcm[1];
 rcm[2] = gasProbe->rcm[2];
 
 // copy center mass velocity
-vcm[0] = gasProbe->vcm[1];
+vcm[0] = gasProbe->vcm[0];
 vcm[1] = gasProbe->vcm[1];
 vcm[2] = gasProbe->vcm[2];
 
@@ -1029,32 +1034,32 @@ double fi_gas[natoms][3]; // initial force of buffer gas
 Up_gas = 0.0;
 for (int iatom = 0; iatom < natoms; iatom++) {
   if (force_type == 1) {
-    if (iatom == 1) { 
+    if (iatom == 1) {
       force->lennardjones_CO2(gasProbe,iatom,f,Up);
     } else {
-      force->lennardjones(gasProbe,iatom,f,Up);
-    }
+     force->lennardjones(gasProbe,iatom,f,Up);
+    } 
   } else if (force_type == 2) {
-    if (iatom == 1) { 
+    if (iatom == 1) {
       force->lennardjones_LC_CO2(gasProbe,iatom,f,Up);
     } else {
       force->lennardjones_LC(gasProbe,iatom,f,Up);
-    }    
+    }
   } else if (force_type == 3) {
-    if (iatom == 1) { 
-      force->lennardjones_coulomb_CO2(gasProbe,iatom,f,Up);    
+    if (iatom == 1) {
+      force->lennardjones_coulomb_CO2(gasProbe,iatom,f,Up); 
     } else {
-      force->lennardjones_coulomb(gasProbe,iatom,f,Up);    
-    }  
+      force->lennardjones_coulomb(gasProbe,iatom,f,Up);
+    }
   } else if (force_type == 4) {
-    if (iatom == 1) { 
-      force->lennardjones_coulomb_LC_CO2(gasProbe,iatom,f,Up);    
+    if (iatom == 1) {
+      force->lennardjones_coulomb_CO2(gasProbe,iatom,f,Up); 
     } else {
-      force->lennardjones_coulomb_LC(gasProbe,iatom,f,Up);    
+      force->lennardjones_coulomb_LC(gasProbe,iatom,f,Up);
     }
   } else if (force_type == 5) {
     if (iatom == 1) {
-      force->lennardjones_coulomb_induced_dipole_iso_CO2(gasProbe,iatom,f,Up);
+      force->lennardjones_coulomb_induced_dipole_iso_CO2(gasProbe,iatom,f,Up); 
     } else {
       force->lennardjones_coulomb(gasProbe,iatom,f,Up);
     }
@@ -1065,7 +1070,7 @@ for (int iatom = 0; iatom < natoms; iatom++) {
       force->lennardjones_coulomb_LC(gasProbe,iatom,f,Up);
     }
   }
-  
+    
   Up_gas += Up;
   f_gas[iatom][0] = f[0];
   f_gas[iatom][1] = f[1];
@@ -1101,7 +1106,7 @@ int t;
 t = 1;
 
 vector<double> ri(3), rj(3), vi(3), vj(3), fi(3), fj(3);
-double mi, mj, m2M, d2ij;
+double mi, mj, d2ij;
 
 d2ij = d_bond*d_bond;
 
@@ -1143,22 +1148,10 @@ while (trajTries < maxTries && maxTries < 10) {
     t = 1;
     tmp = 0.0;
   }
+
   // first-half verlet integration     
-  // CO2 as linear molecule O1-O2 and carbon as dummy particle at center
-  /*for (int i = 0; i < 3; i++) {
-    fi[i] = f_gas[0][i] + 0.5*f_gas[1][i]; // oxygen 1 + carbon contribution
-    fj[i] = f_gas[2][i] + 0.5*f_gas[1][i]; // oxygen 2 + carbon contribution
-  }*/
-  // CO2 trilinear molecule O-C-O
-  // G. Ciccotti et al. Molecular dynamics of rigid systems 
-  // in cartesian coordinates A general formulation
-  // MOLECULAR PHYSICS, 1982, VOL. 47, No. 6, 1253-1264
-  m2M = m[1]/M; 
-  for (int i = 0; i < 3; i++) {
-    fi[i] = (1.0 - 0.5*m2M)*f_gas[0][i] + m[0]/M*f_gas[1][i] - 0.5*m2M*f_gas[2][i];
-    fj[i] = (1.0 - 0.5*m2M)*f_gas[2][i] + m[0]/M*f_gas[1][i] - 0.5*m2M*f_gas[0][i];
-  } 
-  // oxygen 1
+  // N2 diatomic molecule N-N
+  // nitrogen 1
   ri[0] = x[0];
   ri[1] = y[0];
   ri[2] = z[0];
@@ -1166,7 +1159,7 @@ while (trajTries < maxTries && maxTries < 10) {
   vi[1] = vy[0];
   vi[2] = vz[0];
   mi = m[0];
-  // oxyegn 2
+  // nitrogen 2
   rj[0] = x[2];
   rj[1] = y[2];
   rj[2] = z[2];
@@ -1174,17 +1167,27 @@ while (trajTries < maxTries && maxTries < 10) {
   vj[1] = vy[2];
   vj[2] = vz[2];
   mj = m[2];
-
+  
+  /*for (int i = 0; i < 3; i++) {
+    fi[i] = f_gas[0][i] + 0.5*f_gas[1][i]; // nitrogen 1 + dummy atom
+    fj[i] = f_gas[2][i] + 0.5*f_gas[1][i]; // nitrogen 2 + dummy atom
+  }*/   
+  for (int i = 0; i < 3; i++) {
+    fi[i] = (1.0 - m[1]/(2*M))*f_gas[0][i] + m[0]/M*f_gas[1][i] - m[1]/(2*M)*f_gas[2][i];
+    fj[i] = (1.0 - m[1]/(2*M))*f_gas[2][i] + m[0]/M*f_gas[1][i] - m[1]/(2*M)*f_gas[0][i];
+  }
+    
   first_half_verlet_constrained(ri, rj, vi, vj, fi, fj, mi, mj, dt, d2ij);
+
   // update positions and velocties
-  // oxygen 1
+  // nitrogen 1
   x[0] = ri[0];
   y[0] = ri[1];
   z[0] = ri[2];
   vx[0] = vi[0];
   vy[0] = vi[1];
   vz[0] = vi[2];
-  // oxygen 2
+  // nitrogen 2
   x[2] = rj[0];
   y[2] = rj[1];
   z[2] = rj[2];
@@ -1193,10 +1196,10 @@ while (trajTries < maxTries && maxTries < 10) {
   vz[2] = vj[2];
   // update center mass position and velocity
   for (int i = 0; i < 3; i++) {
-    rcm[i] = 0.5*(ri[i]+rj[i]);
-    vcm[i] = 0.5*(vi[i]+vj[i]);
+    rcm[i] = 0.5*(ri[i] + rj[i]);
+    vcm[i] = 0.5*(vi[i] + vj[i]);      
   }
-  // carbon
+  // dummy
   x[1] = rcm[0];
   y[1] = rcm[1];
   z[1] = rcm[2];
@@ -1218,34 +1221,33 @@ while (trajTries < maxTries && maxTries < 10) {
   rcm_new = rcm;
   dtheta += anglevec(rcm_new,rcm_old);
   rcm_old = rcm_new;
-  
+
   // calculate force
   Up_gas = 0.0;
-  
   for (int iatom = 0; iatom < natoms; iatom++) {
     if (force_type == 1) {
-      if (iatom == 1) { 
+      if (iatom == 1) {
         force->lennardjones_CO2(gasProbe,iatom,f,Up);
       } else {
         force->lennardjones(gasProbe,iatom,f,Up);
-      }
+      } 
     } else if (force_type == 2) {
-      if (iatom == 1) { 
+      if (iatom == 1) {
         force->lennardjones_LC_CO2(gasProbe,iatom,f,Up);
       } else {
         force->lennardjones_LC(gasProbe,iatom,f,Up);
-      }    
+      }
     } else if (force_type == 3) {
-      if (iatom == 1) { 
-        force->lennardjones_coulomb_CO2(gasProbe,iatom,f,Up);    
+      if (iatom == 1) {
+        force->lennardjones_coulomb_CO2(gasProbe,iatom,f,Up); 
       } else {
-        force->lennardjones_coulomb(gasProbe,iatom,f,Up);    
-      }  
+        force->lennardjones_coulomb(gasProbe,iatom,f,Up);
+      }
     } else if (force_type == 4) {
-      if (iatom == 1) { 
-        force->lennardjones_coulomb_LC_CO2(gasProbe,iatom,f,Up);    
+      if (iatom == 1) {
+        force->lennardjones_coulomb_LC_CO2(gasProbe,iatom,f,Up); 
       } else {
-        force->lennardjones_coulomb_LC(gasProbe,iatom,f,Up);    
+        force->lennardjones_coulomb_LC(gasProbe,iatom,f,Up);
       }
     } else if (force_type == 5) {
       if (iatom == 1) {
@@ -1259,26 +1261,15 @@ while (trajTries < maxTries && maxTries < 10) {
       } else {
         force->lennardjones_coulomb_LC(gasProbe,iatom,f,Up);
       }
-    }
-  
+    }  
     Up_gas += Up;
     f_gas[iatom][0] = f[0];
     f_gas[iatom][1] = f[1];
     f_gas[iatom][2] = f[2];
   } 
-
+  
   // second-half verlet integration     
-  // CO2 as linear molecule O1-O2 and carbon as dummy particle at center
-  /*for (int i = 0; i < 3; i++) {
-    fi[i] = f_gas[0][i] + 0.5*f_gas[1][i]; // oxygen 1 + carbon contribution
-    fj[i] = f_gas[2][i] + 0.5*f_gas[1][i]; // oxygen 2 + carbon contribution
-  }*/
-  m2M = m[1]/M;
-  for (int i = 0; i < 3; i++) {
-    fi[i] = (1.0 - 0.5*m2M)*f_gas[0][i] + m[0]/M*f_gas[1][i] - 0.5*m2M*f_gas[2][i];
-    fj[i] = (1.0 - 0.5*m2M)*f_gas[2][i] + m[0]/M*f_gas[1][i] - 0.5*m2M*f_gas[0][i];
-  }
-  // oxygen 1
+  // nitrogen 1
   ri[0] = x[0];
   ri[1] = y[0];
   ri[2] = z[0];
@@ -1286,7 +1277,7 @@ while (trajTries < maxTries && maxTries < 10) {
   vi[1] = vy[0];
   vi[2] = vz[0];
   mi = m[0];
-  // oxyegn 2
+  // nitrogen 2
   rj[0] = x[2];
   rj[1] = y[2];
   rj[2] = z[2];
@@ -1295,20 +1286,30 @@ while (trajTries < maxTries && maxTries < 10) {
   vj[2] = vz[2];
   mj = m[2];
 
+  /*for (int i = 0; i < 3; i++) {
+    fi[i] = f_gas[0][i] + 0.5*f_gas[1][i]; // nitrogen 1 + dummy atom
+    fj[i] = f_gas[2][i] + 0.5*f_gas[1][i]; // nitrogen 2 + dummy atom
+  }*/
+  for (int i = 0; i < 3; i++) {
+    fi[i] = (1.0 - m[1]/(2*M))*f_gas[0][i] + m[0]/M*f_gas[1][i] - m[1]/(2*M)*f_gas[2][i];
+    fj[i] = (1.0 - m[1]/(2*M))*f_gas[2][i] + m[0]/M*f_gas[1][i] - m[1]/(2*M)*f_gas[0][i];
+  }  
+    
   second_half_verlet_constrained(ri, rj, vi, vj, fi, fj, mi, mj, dt);
-  // oxygen 1
+  // update velocities
   vx[0] = vi[0];
   vy[0] = vi[1];
   vz[0] = vi[2];
-  // oxygen 2
   vx[2] = vj[0];
   vy[2] = vj[1];
   vz[2] = vj[2];
+
   // update center mass position and velocity
   for (int i = 0; i < 3; i++) {
-    vcm[i] = 0.5*(vi[i]+vj[i]);
+    vcm[i] = 0.5*(vi[i] + vj[i]);      
   }
-  // carbon
+
+  // dummy
   vx[1] = vcm[0];
   vy[1] = vcm[1];
   vz[1] = vcm[2];
@@ -1321,15 +1322,14 @@ while (trajTries < maxTries && maxTries < 10) {
   }
   
   stepcount++;
-
+   
   if (dtheta > theta_max) {
     trajTries++;
     dt = time_step/(trajTries + 1);
     stepcount = 0;
-    //cout << dtheta*180./M_PI<< endl;
     continue;
-  } 
-
+  }
+  
   // check if outside the box simulation
   if (abs(rcm[0]) >= lx || abs(rcm[1]) >= ly || abs(rcm[2]) >= lz) {
     Ek = 0.0;
@@ -1341,17 +1341,15 @@ while (trajTries < maxTries && maxTries < 10) {
     }
     E = Up_gas + Ek;
     dE = abs((E-Ei)/Ei)*100.0;
-    if (dE > 20.0) {
+    if (dE > 1.0) {
       trajTries++;
       maxTries++;
       dt = time_step/(trajTries + 1);
       stepcount = 0;
       continue;
-    } else {
+    } else { 
       vcm_f = vcm;
       chi = anglevec(vcm_i,vcm_f);
-      //cout << "dtheta: " <<  dtheta*180./M_PI << endl;
-      //cout << "chi: " << chi*180./M_PI << endl;
       success = true;
       return;
     }
@@ -1370,8 +1368,8 @@ while (trajTries < maxTries && maxTries < 10) {
         Ek += KineticEnergy(m[iatom],v);
       }
       E = Up_gas + Ek;
-      dE = abs((E-Ei)/Ei)*100.0;      
-      if (dE > 20.0) {
+      dE = abs((E-Ei)/Ei)*100.0;
+      if (dE > 1.0) {
         trajTries++;
         maxTries++;
         dt = time_step/(trajTries + 1);
@@ -1380,8 +1378,6 @@ while (trajTries < maxTries && maxTries < 10) {
       } else {
         vcm_f = vcm;
         chi = anglevec(vcm_i,vcm_f);
-        //cout << "dtheta: " <<  dtheta*180./M_PI << endl;
-        //cout << "chi: " << chi*180./M_PI << endl;
         success = true;
         return;
       }
@@ -1708,18 +1704,18 @@ vector<double> rci(3), rcj(3), vci(3), vcj(3), rcij(3), rij(3), gij(3);
 muij = mi*mj/(mi+mj);
 
 for (int i = 0; i < 3; i++) {
-  vci[i] = vi[i] + 0.5*dt/mi*fi[i]*KCALMOLANGAMU_TO_ANGFS2; // v'1(dt/2)
-  vcj[i] = vj[i] + 0.5*dt/mj*fj[i]*KCALMOLANGAMU_TO_ANGFS2; // v'2(dt/2)
-  rci[i] = ri[i] + dt*vci[i];                               // r'1(dt) 
-  rcj[i] = rj[i] + dt*vcj[i];                               // r'2(dt)
-  rij[i] = ri[i] - rj[i];                                   // r12(0)  
-  rcij[i] = rci[i] - rcj[i];                                // r'12(dt)  
+  vci[i] = vi[i] + 0.5*dt/mi*fi[i]*KCALMOLANGAMU_TO_ANGFS2;  // v'1(dt/2)
+  vcj[i] = vj[i] + 0.5*dt/mj*fj[i]*KCALMOLANGAMU_TO_ANGFS2;  // v'2(dt/2)
+  rci[i] = ri[i] + dt*vci[i];                                // r'1(dt) 
+  rcj[i] = rj[i] + dt*vcj[i];                                // r'2(dt)
+  rij[i] = ri[i] - rj[i];                                    // r12(0)  
+  rcij[i] = rci[i] - rcj[i];                                 // r'12(dt)  
 }  
 
 double rc2ij,r2ij,rcijrij;
-r2ij = rij[0]*rij[0] + rij[1]*rij[1] + rij[2]*rij[2];
-rc2ij = rcij[0]*rcij[0] + rcij[1]*rcij[1] + rcij[2]*rcij[2];
-rcijrij = rcij[0]*rij[0] + rcij[1]*rij[1] + rcij[2]*rij[2];
+r2ij = rij[0]*rij[0] + rij[1]*rij[1] + rij[2]*rij[2];        // r12^2(0)
+rc2ij = rcij[0]*rcij[0] + rcij[1]*rcij[1] + rcij[2]*rcij[2]; // r'12^2(dt)
+rcijrij = rcij[0]*rij[0] + rcij[1]*rij[1] + rcij[2]*rij[2];  // r'12(dt).r12(0)
 
 double determ;
 determ = rcijrij*rcijrij - r2ij*(rc2ij - d2ij);

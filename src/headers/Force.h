@@ -51,8 +51,16 @@ public:
   void coulomb_induced_dipole_LC(GasBuffer *gas, int iatom, vector<double> n, vector<double> &f, double &Up);
   void coulomb_induced_dipole_iso(GasBuffer *gas, int iatom, vector<double> &f, double &Up);
   void coulomb_induced_dipole_iso_LC(GasBuffer *gas, int iatom, vector<double> &f, double &Up);
-  void nitrogen2_LC(GasBuffer *gas, vector<double> &f, double &Up);
-  void nitrogen(GasBuffer *gas, vector<double> &f, double &Up);
+  // anisotorpy polarizability
+  void coulomb_induced_dipole_aniso(GasBuffer *gas, int iatom, vector<double> &f, double &Up);
+  void coulomb_induced_dipole_aniso_LC(GasBuffer *gas, int iatom, vector<double> &f, double &Up);
+  void lennardjones_coulomb_induced_dipole_aniso(GasBuffer *gas, int iatom, vector<double> &f, double &Up);
+  void lennardjones_coulomb_induced_dipole_aniso_LC(GasBuffer *gas, int iatom, vector<double> &f, double &Up);
+  // average weighting force
+  void average_weighting_force_N2(GasBuffer *gas, vector<double> &f, double &Up);
+  void average_weighting_force_LC_N2(GasBuffer *gas, vector<double> &f, double &Up);  
+  void average_weighting_force_CO2(GasBuffer *gas, vector<double> &f, double &Up);
+  void average_weighting_force_LC_CO2(GasBuffer *gas, vector<double> &f, double &Up); 
   // for carbon of CO2 molecule
   void lennardjones_CO2(GasBuffer *gas, int iatom, vector<double> &f, double &Up);
   void lennardjones_LC_CO2(GasBuffer *gas, int iatom, vector<double> &f, double &Up);
@@ -60,9 +68,6 @@ public:
   void lennardjones_coulomb_LC_CO2(GasBuffer *gas, int iatom, vector<double> &f, double &Up);
   void lennardjones_coulomb_induced_dipole_iso_CO2(GasBuffer *gas, int iatom, vector<double> &f, double &Up);
   void lennardjones_coulomb_induced_dipole_iso_LC_CO2(GasBuffer *gas, int iatom, vector<double> &f, double &Up);
-
-  //double Switch(double rIn, double rOut, double r);
-  //double DSwitch(double rIn, double rOut, double r);
 };
 
 #endif 

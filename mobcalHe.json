@@ -1,5 +1,6 @@
 {
   "targetFileName": "c60.xyz",
+  "force-field" : "mobcalHe.ff",
   "numberProbe" : 10000,
   "nIter" : 10,
   "seed" : 2104,

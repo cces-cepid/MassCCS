@@ -59,6 +59,7 @@ private:
   double inertiaValues[3];
   double inertiaVectors[3][3];
   vector<double> assignedParameter(string chemical);
+  string elementChem(int amui);
   void printFF();
   unsigned int nparameters;
   string *user_atomName;

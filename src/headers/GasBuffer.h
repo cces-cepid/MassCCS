@@ -30,6 +30,7 @@
 #include <stdio.h>
 #include <cstring>
 #include <iostream>
+#include "Constants.h"
 
 using namespace std;
 
@@ -58,6 +59,8 @@ public:
   double vcm[3];
   string gas_type;
   double d;
+  double alpha_radial;
+  double alpha_axial;
 };
 
 #endif // MASSCCS_V1_GASBUFFER_H
